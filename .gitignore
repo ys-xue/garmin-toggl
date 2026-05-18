@@ -1,0 +1,11 @@
+# Build artifacts
+bin/
+
+# Local secrets
+source/Secrets.mc
+
+# macOS
+.DS_Store
+
+# IDE
+.vscode/
