@@ -3,6 +3,9 @@ import Toybox.WatchUi;
 
 class TimeLoggerApp extends Application.AppBase {
 
+    var delegate;
+
+    (:glance, :background)
     function initialize() {
         AppBase.initialize();
     }
@@ -17,7 +20,18 @@ class TimeLoggerApp extends Application.AppBase {
 
     // Return the initial view of your application here
     function getInitialView() {
-        return [ new TimeLoggerView(), new TimeLoggerDelegate() ];
+        delegate = new TimeLoggerDelegate();
+        return [ new TimeLoggerView(), delegate ];
+    }
+
+    (:glance)
+    function getGlanceView() {
+        return [ new TimeLoggerGlance() ];
+    }
+
+    (:background)
+    function getServiceDelegate() {
+        return [ new TimeLoggerCheckinService() ];
     }
 
 }

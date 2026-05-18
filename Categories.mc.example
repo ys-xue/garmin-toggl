@@ -1,0 +1,28 @@
+// Copy this file to source/Categories.mc and customize for your own buckets and projects.
+// source/Categories.mc is gitignored — your personal taxonomy stays local.
+//
+// To fetch your Toggl project IDs once:
+//   curl -s -u "YOUR_TOGGL_TOKEN:api_token" \
+//     "https://api.track.toggl.com/api/v9/workspaces/YOUR_WORKSPACE_ID/projects" \
+//     | jq '.[] | {id, name}'
+//
+// Each bucket maps to one Toggl project ID. The top-level "name" is what shows
+// in the watch menu. "subs" is an optional list of specific activities — if
+// present, picking the bucket opens a sub-menu where "Just <name>" uses the
+// bucket name itself as the Toggl entry description.
+//
+// Use projectId = null if you don't want a project assignment for a bucket.
+module Categories {
+    const BUCKETS = [
+        { :name => "Deep Work", :projectId => 0, :subs => ["IC Work", "Coding"] },
+        { :name => "Meeting",   :projectId => 0, :subs => [] },
+        // Workout activities recorded natively by the watch (Run, Ride, etc.)
+        // are best synced separately via a Strava→Toggl webhook, not logged
+        // by hand here. Keep this bucket for things the watch can't auto-record:
+        { :name => "Recovery",  :projectId => 0, :subs => ["Physical therapy", "Hip recovery"] },
+        { :name => "Life",      :projectId => 0, :subs => ["Breakfast", "Lunch", "Dinner", "Shower", "Chores"] },
+        { :name => "Commute",   :projectId => 0, :subs => [] },
+        { :name => "Reading",   :projectId => 0, :subs => [] },
+        { :name => "Chill",     :projectId => 0, :subs => [] }
+    ];
+}

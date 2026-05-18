@@ -17,22 +17,21 @@ Target device: Forerunner 570 (47mm). Should work on other CIQ 6+ watches with a
 - **Idle screen** shows the app name and a prompt to press START.
 - **Press START** to open the category menu. Pick one — Toggl starts a running timer.
 - **Running screen** shows the active category and a live elapsed counter (updates every second).
-- **Press BACK on the running screen** to stop the timer.
-- **Press START on the running screen** to switch: pick a different category and Toggl atomically stops the old timer and starts a new one.
+- **Press START on the running screen** to stop the current timer and immediately open the category menu. Pick another to switch, or press BACK to just leave it stopped.
+- **Press BACK** to exit the app. A running timer keeps running on Toggl — next time you open the app it re-syncs from Toggl's "current running entry" endpoint.
+- **Glance view** (swipe up/down on the watch face) shows the active category and live elapsed time, or just "TimeLogger" when idle.
+- **15-min check-in.** While a timer is running the watch buzzes every 15 minutes and the next time you open the app it asks "Still doing X?". Yes keeps it running, No stops it. Worst-case drift if you forget is 15 minutes.
 - All timestamps are sent in UTC; Toggl renders them in your local time.
 
 ### Custom categories
 
-Default list: `Deep Work, Meeting, Commute, Workout, Life Ops, Spanish, Reading, Personal`.
+Categories live in `source/Categories.mc`, which is gitignored so it can hold your real Toggl project IDs. Copy `Categories.mc.example` to `source/Categories.mc` and edit. The format is a list of buckets:
 
-You can replace it with your own, **no rebuild required**:
+```monkeyc
+{ :name => "Deep Work", :projectId => 217175265, :subs => ["IC Work", "Coding", "Blog"] }
+```
 
-1. Install the app on your watch.
-2. On your phone, open **Garmin Connect Mobile** → your device → **Activities & App Management** → **Connect IQ Apps** → **TimeLogger** → **Settings**.
-3. Edit the **Categories** field. Format: comma-separated string. Example: `Code, Email, Lunch, Walk, Sleep`.
-4. Save. The new list shows up next time you open the app on the watch.
-
-If you'd rather change the built-in default, edit both `resources/properties.xml` and the fallback in `source/TimeLoggerDelegate.mc` (`initialize` function), then rebuild.
+A bucket with empty `:subs` starts the timer immediately when selected. A bucket with sub-activities opens a sub-menu where "Just <name>" uses the bucket name as the description. Editing categories requires a rebuild.
 
 ### Setup
 
@@ -78,22 +77,21 @@ Connect via USB, copy `bin/TimeLogger.prg` to `GARMIN/APPS/`. Launch from **Star
 - **空闲页面**显示 app 名字，提示按 START。
 - **按 START** 打开类别菜单，选一个，Toggl 立刻开始一个运行中的 timer。
 - **运行页面**显示当前类别和实时计时器（每秒刷新）。
-- **运行页面按 BACK** 停止当前 timer。
-- **运行页面按 START** 切换：选另一个类别，Toggl 会自动停掉旧 timer 并开新的。
+- **运行页面按 START**：先停掉当前 timer，立刻弹出类别菜单。选下一个等于切换，按 BACK 等于只停不开。
+- **任何时候按 BACK**：退出 app。timer 继续在 Toggl 跑，下次开 app 会通过 Toggl 的"current running entry"接口同步回来。
+- **Glance view**（表盘上下滑动的卡片）：running 时显示当前类别和实时秒数，idle 时只显示 "TimeLogger"。
+- **15 分钟 check-in**：timer 在跑的时候每 15 分钟手表会震一下，下次打开 app 会问"Still doing X?"，Yes 继续 / No 立刻停。万一忘了切换，最大误差就是 15 分钟。
 - 所有时间戳用 UTC 发送，Toggl 会按你当地时区显示。
 
 ### 自定义类别
 
-默认列表：`Deep Work, Meeting, Commute, Workout, Life Ops, Spanish, Reading, Personal`。
+类别配置在 `source/Categories.mc`，这个文件已被 gitignore，可以放真实的 Toggl project ID。把 `Categories.mc.example` 复制成 `source/Categories.mc` 然后编辑。格式是一个 bucket 列表：
 
-你可以换成自己的类别，**不需要重新编译**：
+```monkeyc
+{ :name => "Deep Work", :projectId => 217175265, :subs => ["IC Work", "Coding", "Blog"] }
+```
 
-1. 把 app 装到手表上。
-2. 手机上打开 **Garmin Connect Mobile** → 你的设备 → **活动与 app 管理** → **Connect IQ 应用** → **TimeLogger** → **设置**。
-3. 编辑 **Categories** 字段，格式是逗号分隔的字符串，比如：`Code, Email, Lunch, Walk, Sleep`。
-4. 保存。下次在手表上打开 app 时新列表生效。
-
-如果想改源码里的默认值，同时编辑 `resources/properties.xml` 和 `source/TimeLoggerDelegate.mc` 里 `initialize` 函数中的 fallback 字符串，然后重新编译。
+`:subs` 为空的 bucket 选中就直接开始计时；带子项的会先进入子菜单，其中"Just <name>"用 bucket 名作为描述。改完需要重新编译。
 
 ### 配置
 

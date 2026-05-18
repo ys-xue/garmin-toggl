@@ -27,6 +27,18 @@ class TimeLoggerView extends WatchUi.View {
 
     function onTick() as Void {
         WatchUi.requestUpdate();
+        if (Application.Storage.getValue("pendingCheckin") == true) {
+            var cat = Application.Storage.getValue("currentCategory");
+            if (cat != null) {
+                // Clear flag at push so we don't re-push on the next tick.
+                // ConfirmationDelegate handles Yes/No; Yes is a no-op,
+                // No calls stopTogglTimer (which also cancels the next checkin).
+                Application.Storage.deleteValue("pendingCheckin");
+                var conf = new WatchUi.Confirmation("Still doing " + cat + "?");
+                WatchUi.pushView(conf, new TimeLoggerCheckinConfirmationDelegate(), WatchUi.SLIDE_UP);
+            }
+            // If cat is null (sync in flight), leave the flag for next tick.
+        }
     }
 
     function onUpdate(dc) {
@@ -71,8 +83,8 @@ class TimeLoggerView extends WatchUi.View {
 
         // Bottom hints, two lines
         dc.setColor(Graphics.COLOR_LT_GRAY, Graphics.COLOR_TRANSPARENT);
-        dc.drawText(cx, cy + 70, Graphics.FONT_XTINY, "BACK to stop", center);
-        dc.drawText(cx, cy + 95, Graphics.FONT_XTINY, "START to switch", center);
+        dc.drawText(cx, cy + 70, Graphics.FONT_XTINY, "START to stop / switch", center);
+        dc.drawText(cx, cy + 95, Graphics.FONT_XTINY, "BACK to exit", center);
     }
 
     function computeElapsed() {

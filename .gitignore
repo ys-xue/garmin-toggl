@@ -1,8 +1,9 @@
 # Build artifacts
 bin/
 
-# Local secrets
+# Local secrets and personal config
 source/Secrets.mc
+source/Categories.mc
 
 # macOS
 .DS_Store

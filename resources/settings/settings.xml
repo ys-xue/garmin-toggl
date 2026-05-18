@@ -1,5 +1,2 @@
 <settings>
-    <setting propertyKey="@Properties.Categories" title="Categories" prompt="Enter categories (comma separated)">
-        <settingConfig type="alphaNumeric" maxLength="100"/>
-    </setting>
 </settings>
